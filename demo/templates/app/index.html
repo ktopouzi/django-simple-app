@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center mb-3">Demo App</h1>
+    {% if test %}
+        {% for index in test %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="lead">{{index.steps}}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No Steps Available</p>
+    {% endif %}
+{% endblock %}
