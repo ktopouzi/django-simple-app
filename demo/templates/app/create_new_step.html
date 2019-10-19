@@ -1,13 +1,79 @@
 {% extends 'base.html' %}
 
+{% block message %}
+{% if messages %}
+{% for message in messages %}
+{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+<div class="alert alert-success">{{ message }}</div>
+{% else %}
+<div class="alert alert-danger">
+    {% for error in form.errors %}
+    <span>{{ form.non_field_errors.as_text }}</span>
+    {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endblock %}
 {% block content%}
-<h1>Create new entry</h1>
-<form action="." method="post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" name="" id="" value="Save">
-    <a class="btn btn-dark" href="{% url 'demo:index' %}">Go back</a>
-</form>
 
+<div class="col-md-8 m-auto">
+    <h1>Create new entry</h1>
+    <form action="." method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input class="btn btn-primary" type="submit" name="" id="" value="Save">
+        <a class="btn btn-dark" href="{% url 'app:index' %}">Go back</a>
+    </form>
+</div>
 
+<script>
+    $(function () {
+        $('#id_User,#id_Date,#id_Steps').addClass('form-control')
+        $('input[name="Date"]').daterangepicker({
+            "autoApply": true,
+            "singleDatePicker": true,
+            "locale": {
+                "format": "MM/DD/YYYY",
+                "separator": " - ",
+                "applyLabel": "Apply",
+                "cancelLabel": "Cancel",
+                "fromLabel": "From",
+                "toLabel": "To",
+                "customRangeLabel": "Custom",
+                "weekLabel": "W",
+                "daysOfWeek": [
+                    "Su",
+                    "Mo",
+                    "Tu",
+                    "We",
+                    "Th",
+                    "Fr",
+                    "Sa"
+                ],
+                "monthNames": [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+                ],
+                "firstDay": 1
+            },
+            "startDate": "10/13/2019",
+            "endDate": "10/13/2019",
+            "opens": "right"
+        }, function (start, end, label) {
+            console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+        });
+    });
+</script>
 {% endblock %}

@@ -1,0 +1,35 @@
+<h1 class="text-center m-5">Demo App Data Representation</h1>
+{% if steps %}
+{% else %}
+<div class="alert alert-danger" role="alert">
+    <span>No data available</span>
+</div>
+{% endif %}
+
+<canvas id="myChart" width="400" height="400"></canvas>
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels:  [{% for index in steps %} "{{index.Date}}", {% endfor %}],
+                datasets: [{
+                    label: '# of Steps',
+                    data: [{% for index in steps %} {{ index.Steps }}, {% endfor %}],
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+</script>

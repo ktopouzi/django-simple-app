@@ -1,16 +1,120 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="text-center mb-3">Demo App</h1>
-    {% if test %}
-        {% for index in test %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <p class="lead">{{index.steps}}</p>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No Steps Available</p>
-    {% endif %}
+<div class="col-md-8 m-auto">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-sm">
+            <label for="user-select">Select User:</label>
+            <select class='form-control' id="user-select">
+                {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm">
+                <label for="Date">Select Date Range:</label>
+            <input class="form-control" type="text" name="Date" id="Date">
+        </div>
+    </div>
+</div>
+
+<div id="display-chart"></div>
+<script>
+    var start_date="2019-10-1";
+    var end_date="2019-10-31";
+    var id = 1;
+    $('#user-select').change(function () {
+        id = $(this).val()
+        $.ajax({
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            method: "POST",
+            data: {date_start: start_date, date_end: end_date},
+            url: "/app/" + $(this).val()+"/",
+            success: function (response) {
+                $('#display-chart').html(response)
+            },
+            error: function (err_data) {
+                console.log(err_data)
+            }
+        })
+    })
+
+    $('#Date').change(function () {
+        $.ajax({
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            method: "POST",
+            url: "/app/"+ id+"/",
+            data: {date_start: start_date, date_end: end_date},
+            success: function (response) {
+                $('#display-chart').html(response)
+            },
+            error: function (err_data) {
+                console.log(err_data)
+            }
+        })
+    })
+
+    function getCookie(c_name) {
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) c_end = document.cookie.length;
+                return unescape(document.cookie.substring(c_start, c_end));
+            }
+        }
+        return "";
+    }
+</script>
+
+<script>
+    $(function () {
+        $('input[name="Date"]').daterangepicker({
+            "autoApply": true,
+            "locale": {
+                "format": "YYYY-MM-DD",
+                "separator": " - ",
+                "applyLabel": "Apply",
+                "cancelLabel": "Cancel",
+                "fromLabel": "From",
+                "toLabel": "To",
+                "customRangeLabel": "Custom",
+                "weekLabel": "W",
+                "daysOfWeek": [
+                    "Su",
+                    "Mo",
+                    "Tu",
+                    "We",
+                    "Th",
+                    "Fr",
+                    "Sa"
+                ],
+                "monthNames": [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+                ],
+                "firstDay": 1
+            },
+            "startDate": "2019-10-1",
+            "endDate": "2019-10-31",
+            "opens": "right"
+        }, function (start, end, label) {
+            console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+            start_date = start.format('YYYY-MM-DD')
+            end_date = end.format('YYYY-MM-DD')
+        });
+    });
+</script>
 {% endblock %}
