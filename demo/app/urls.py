@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
 
-app_name = "demo"
+app_name = "app"
 urlpatterns = [
     path('',views.index, name='index'),
-    path('create/',views.StepCreateView.as_view(), name='step-create')
-    
+    path('<int:id>/',views.app, name='app'),
+    path('create/',views.step_create_view, name='step-create')
+ 
 ]
