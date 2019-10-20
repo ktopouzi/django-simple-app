@@ -23,7 +23,7 @@ def step_create_view(request):
     if form.is_valid():
         form.save()
         user = form.cleaned_data['User']
-        messages.success(request,f'User {user} registerd successfully')
+        messages.success(request,f'Data for user {user}, registerd successfully')
         form = StepCreateFrom()
     else:
         messages.error(request,form.errors)
